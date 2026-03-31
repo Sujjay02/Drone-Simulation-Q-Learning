@@ -7,6 +7,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CATKIN_DEPENDENCIES
   rospy
   mrs_msgs
+  nav_msgs
+  std_msgs
   )
 
 find_package(catkin REQUIRED COMPONENTS
