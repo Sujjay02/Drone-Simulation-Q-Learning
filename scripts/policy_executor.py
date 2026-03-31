@@ -173,7 +173,7 @@ class PolicyExecutor:
         # Subscribe to odometry for each drone
         for uav in UAV_NAMES:
             rospy.Subscriber(
-                f"/{uav}/odometry/odom_main",
+    		f"/{uav}/hw_api/odometry",
                 Odometry,
                 self._odom_callback,
                 callback_args=uav,
