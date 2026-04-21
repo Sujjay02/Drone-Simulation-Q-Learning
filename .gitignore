@@ -1,0 +1,17 @@
+# Virtual environment
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Trained model (optional — comment out if you want to track policy.pkl)
+# policy.pkl
+
+# Plots (optional)
+# coverage.png
+# convergence.png
+
+# OS files
+.DS_Store

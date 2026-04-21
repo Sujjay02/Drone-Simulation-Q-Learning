@@ -39,8 +39,8 @@ GRID_MAX =  45.0
 COVERAGE_RADIUS = 5.0       # meters — must match policy_executor.py
 
 # Grid resolution — how many cells per axis
-# 20x20 = 400 cells, each cell = 4.5m wide
-GRID_SIZE = 20
+# 30x30 = 900 cells, each cell = 3m wide (finer than coverage radius of 5m)
+GRID_SIZE = 30
 
 # Number of drones
 NUM_DRONES = 3
@@ -53,16 +53,16 @@ ACTIONS_PER_DRONE = GRID_SIZE * GRID_SIZE
 DISC_POSITIONS_PATH = "disc_positions.json"
 
 # Training hyperparameters
-LEARNING_RATE    = 0.001
-GAMMA            = 0.99
+LEARNING_RATE    = 0.0005
+GAMMA            = 0.95
 EPSILON_START    = 1.0
 EPSILON_MIN      = 0.01
-EPSILON_DECAY    = 0.995
-NUM_EPISODES     = 1000
-MAX_STEPS        = 50       # Steps per episode (each step = place all 3 drones)
-BATCH_SIZE       = 256
-MEMORY_SIZE      = 10000
-TARGET_UPDATE    = 500      # Steps between target network updates
+EPSILON_DECAY    = 0.998    # Slower decay = more exploration
+NUM_EPISODES     = 3000     # More episodes
+MAX_STEPS        = 100      # More steps per episode
+BATCH_SIZE       = 128
+MEMORY_SIZE      = 50000
+TARGET_UPDATE    = 200      # More frequent target updates
 
 # Output files
 POLICY_SAVE_PATH    = "policy.pkl"
@@ -164,17 +164,17 @@ class DQN(nn.Module):
     def __init__(self, state_dim=3, actions_per_drone=ACTIONS_PER_DRONE):
         super(DQN, self).__init__()
         self.shared = nn.Sequential(
-            nn.Linear(state_dim, 128),
+            nn.Linear(state_dim, 256),
             nn.ReLU(),
-            nn.Linear(128, 256),
+            nn.Linear(256, 512),
             nn.ReLU(),
-            nn.Linear(256, 128),
+            nn.Linear(512, 256),
             nn.ReLU(),
         )
         # Separate head for each drone
-        self.head1 = nn.Linear(128, actions_per_drone)
-        self.head2 = nn.Linear(128, actions_per_drone)
-        self.head3 = nn.Linear(128, actions_per_drone)
+        self.head1 = nn.Linear(256, actions_per_drone)
+        self.head2 = nn.Linear(256, actions_per_drone)
+        self.head3 = nn.Linear(256, actions_per_drone)
 
     def forward(self, x):
         shared = self.shared(x)
